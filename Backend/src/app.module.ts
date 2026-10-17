@@ -1,19 +1,37 @@
 import { Module } from '@nestjs/common';
-import { createObserveModule } from '@nestjs/observe';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { ClientesModule } from './clientes/clientes.module.js';
+import { PedidosModule } from './pedidos/pedidos.module.js';
+import { ProductosModule } from './productos/productos.module.js';
+import { InventarioModule } from './inventario/inventario.module.js';
+import { DetallePedidoModule } from './detalle-pedido/detalle-pedido.module.js';
 
-export const { ObserveModule, ObserveInstrument } = createObserveModule();
-
+import { Cliente } from './clientes/entities/cliente.entity.js';
+import { Pedido } from './pedidos/entities/pedido.entity.js';
+import { DetallePedido } from './detalle-pedido/entities/detalle-pedido.entity.js';
+import { Producto } from './productos/entities/producto.entity.js';
+import { Inventario } from './inventario/entities/inventario.entity.js';
 @Module({
   imports: [
-    // Distributed tracing, auto-correlated logs, request/job metrics, error
-    // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
-    ObserveModule.forRoot({
-      appKey: 'YOUR_APP_KEY',
-      appSecret: 'YOUR_APP_SECRET',
-      serviceId: 'pasterleria-miskila',
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: Number.parseInt(process.env.DB_PORT ?? ''),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [Cliente, Pedido, DetallePedido, Producto, Inventario],
+      synchronize: true,
     }),
+    ClientesModule,
+    PedidosModule,
+    ProductosModule,
+    InventarioModule,
+    DetallePedidoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

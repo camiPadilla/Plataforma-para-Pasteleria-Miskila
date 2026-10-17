@@ -1,10 +1,28 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule, ObserveInstrument } from './app.module.js';
+import { AppModule,  } from './app.module.js';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    instrument: ObserveInstrument,
-  });
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  app.setGlobalPrefix('api');
+  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
+  app.enableCors();
+
+  const config = new DocumentBuilder()
+    .setTitle('API Rest Pastelería Miskila - SIS257')
+    .setDescription('API Rest para la gestión de pastelería Miskila SIS257')
+    .setVersion('1.0')
+    .addTag('productos')
+    .addTag('pedidos')
+    .addTag('clientes')
+    .addTag('inventario')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
+
   await app.listen(process.env.PORT ?? 3000);
+  console.log(`App corriendo en ${await app.getUrl()}`);
 }
 await bootstrap();
