@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
 export class CreateProductoDto {
   @ApiProperty()
@@ -20,4 +20,11 @@ export class CreateProductoDto {
   @IsNumber({ maxDecimalPlaces: 2 }, { message: 'El precio debe ser un número con hasta 2 decimales' })
   @Min(0, { message: 'El precio no puede ser negativo' })
   readonly precio: number;
+
+  @ApiPropertyOptional({ minimum: 0, description: 'Existencias disponibles; si se omite, comienza en cero' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: 'El stock debe ser un número entero' })
+  @Min(0, { message: 'El stock no puede ser negativo' })
+  readonly stock?: number;
 }

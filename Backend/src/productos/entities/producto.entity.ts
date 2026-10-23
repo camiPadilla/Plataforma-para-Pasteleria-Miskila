@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Check, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('productos')
+@Check('CHK_productos_stock_no_negativo', '"stock" >= 0')
 export class Producto {
     @PrimaryGeneratedColumn('identity', { name: 'id_producto' })
     id: number;
@@ -13,6 +14,9 @@ export class Producto {
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     precio: number;
+
+    @Column({ type: 'int', default: 0 })
+    stock: number;
 
     @CreateDateColumn({ name: 'fecha_creacion' })
     fechaCreacion: Date;
