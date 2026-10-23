@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { IsDateString, IsInt, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDateString, IsEnum, IsInt, IsNumber, IsOptional, Min } from 'class-validator';
+import { EstadoPedido, TipoPedido } from '../entities/pedido.entity.js';
 
 export class CreatePedidoDto {
   @ApiPropertyOptional()
@@ -14,15 +15,14 @@ export class CreatePedidoDto {
   @IsDateString({}, { message: 'La fecha del pedido debe tener un formato de fecha válido' })
   readonly fechaPedido: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsDateString({}, { message: 'La fecha de entrega debe tener un formato de fecha válido' })
-  readonly fechaEntrega: string;
+  readonly fechaEntrega?: string | null;
 
-  @ApiProperty()
-  @Type(() => Number)
-  @IsInt({ message: 'El tipo de pedido debe ser un número entero' })
-  @Min(0, { message: 'El tipo de pedido no puede ser negativo' })
-  readonly tipoPedido: number;
+  @ApiProperty({ enum: TipoPedido })
+  @IsEnum(TipoPedido, { message: 'El tipo de pedido debe ser En línea o Presencial' })
+  readonly tipoPedido: TipoPedido;
 
   @ApiProperty()
   @Type(() => Number)
@@ -30,16 +30,8 @@ export class CreatePedidoDto {
   @Min(0, { message: 'El total no puede ser negativo' })
   readonly total: number;
 
-  @ApiProperty()
-  @Type(() => Number)
-  @IsInt({ message: 'El estado debe ser un número entero' })
-  @Min(0, { message: 'El estado no puede ser negativo' })
-  readonly estado: number;
+  @ApiProperty({ enum: EstadoPedido })
+  @IsEnum(EstadoPedido, { message: 'El estado debe ser Pendiente, En proceso o Entregado' })
+  readonly estado: EstadoPedido;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString({ message: 'Las observaciones deben ser de tipo cadena' })
-  @MaxLength(255, { message: 'Las observaciones no pueden tener más de 255 caracteres' })
-  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
-  readonly observaciones?: string;
 }

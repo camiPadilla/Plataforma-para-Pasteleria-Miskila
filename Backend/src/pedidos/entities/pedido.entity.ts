@@ -1,5 +1,16 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
+export enum EstadoPedido {
+    Pendiente = 'Pendiente',
+    EnProceso = 'En proceso',
+    Entregado = 'Entregado',
+}
+
+export enum TipoPedido {
+    EnLinea = 'En línea',
+    Presencial = 'Presencial',
+}
+
 @Entity('pedidos')
 export class Pedido {
     @PrimaryGeneratedColumn('identity', { name: 'id_pedido' })
@@ -11,20 +22,17 @@ export class Pedido {
     @Column({ type: 'date', name: 'fecha_pedido' })
     fechaPedido: Date;
 
-    @Column({ type: 'date', name: 'fecha_entrega' })
-    fechaEntrega: Date;
+    @Column({ type: 'date', name: 'fecha_entrega', nullable: true })
+    fechaEntrega: Date | null;
 
-    @Column({ type: 'int', name: 'tipo_pedido' })
-    tipoPedido: number; 
+    @Column({ type: 'enum', enum: TipoPedido, name: 'tipo_pedido' })
+    tipoPedido: TipoPedido;
     
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     total: number;
 
-    @Column({ type: 'int' })
-    estado: number;
-
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    observaciones: string;
+    @Column({ type: 'enum', enum: EstadoPedido })
+    estado: EstadoPedido;
 
     @CreateDateColumn({ name: 'fecha_creacion' })
     fechaCreacion: Date;
