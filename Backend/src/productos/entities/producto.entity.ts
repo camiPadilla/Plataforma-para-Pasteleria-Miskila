@@ -31,6 +31,4 @@ export class Producto {
     @OneToMany('DetallePedido', (detalle: any) => detalle.producto)
     detalles: any[];
 
-    @OneToMany('Inventario', (inventario: any) => inventario.producto)
-    inventarios: any[];
 }
