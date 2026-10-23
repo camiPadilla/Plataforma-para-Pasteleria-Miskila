@@ -6,7 +6,6 @@ import { AppService } from './app.service.js';
 import { ClientesModule } from './clientes/clientes.module.js';
 import { PedidosModule } from './pedidos/pedidos.module.js';
 import { ProductosModule } from './productos/productos.module.js';
-import { InventarioModule } from './inventario/inventario.module.js';
 import { DetallePedidoModule } from './detalle-pedido/detalle-pedido.module.js';
 import { EntregasModule } from './entregas/entregas.module.js';
 
@@ -32,7 +31,6 @@ import { Entrega } from './entregas/entities/entrega.entity.js';
     ClientesModule,
     PedidosModule,
     ProductosModule,
-    InventarioModule,
     DetallePedidoModule,
     EntregasModule,
   ],
